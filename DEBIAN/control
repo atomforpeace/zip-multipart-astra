@@ -1,0 +1,6 @@
+Package: zip-multipart
+Version: 1.0
+Architecture: amd64
+Maintainer: Anton Lushnikov <antonlushnikow@gmail.com>
+Description: Create multipart zip-archive via context menu in Astra Linux
+Depends: zip, zenity, zenity-common

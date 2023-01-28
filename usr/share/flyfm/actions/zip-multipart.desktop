@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Directory
+Actions=MultipartZip
+
+[Desktop Action MultipartZip]
+Name=Create Multipart Archive
+Name[ru]=Создать многотомный архив
+Exec=zip-multipart %f
+Icon=/usr/share/icons/fly-astra/48x48/mimetypes/application-zip.png

@@ -1,0 +1,66 @@
+#!/bin/bash
+
+help ()
+{
+        # Показывает справку
+        echo "Создание многотомного архива zip через gtk"
+        echo
+        echo "zip-multipart -f [список файлов]"
+        echo "  -h вывод этой справки"
+}
+
+
+# Обработка аргументов
+while getopts ":h" option; do
+  case "$option" in
+    h)
+      help
+      exit
+      ;;
+   \?)
+      echo "Некорректный аргумент"
+      help
+      exit 1
+      ;;
+    :)  
+      echo "Отсутствует аргумент"
+      help
+      exit 1
+      ;;
+  esac
+done  
+shift "$((OPTIND-1))"
+
+if [ $# == 0 ] ; then
+  help
+  exit 1
+fi
+
+file_name=$1
+
+# Запрос размера архива
+part_size=$(zenity --entry --text="Размер тома (МБ)")
+[[ "$?" != "0" ]] && exit 1
+
+# Проверка на число
+re='^[0-9]+$'
+if ! [[ $part_size =~ $re ]] || ! [ $part_size -gt 0 ] ; then
+  zenity --error --text="Введено неверное значение"; exit 1
+fi
+
+# Запрос имени файла
+save_file=$(zenity --entry --text="Выберите имя архива" --entry-text=$(basename $file_name))
+[[ "$?" != "0" ]] && exit 1
+
+
+# Создание папки
+file_path=$(dirname $file_name)
+dir_name=$save_file
+if [ -d $file_path/$save_file ] ; then
+  dir_name=$save_file-$(date +"%Y%m%d%H%M")
+fi
+mkdir $file_path/$dir_name
+
+# Архивация
+cd $file_path
+zip -r -s $part_size $dir_name/$save_file.zip $(basename $file_name)
